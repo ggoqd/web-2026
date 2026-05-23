@@ -10,7 +10,6 @@ class Pizza {
         large:  { name: 'Большая',   extraPrice: 200, extraCalories: 200 }
     };
 
-    // цена зависит от размера
     static TOPPINGS_SIZE_DEPENDENT = {
         cheeseCrust: {
             name: 'Сырный борт',
@@ -24,7 +23,6 @@ class Pizza {
         }
     };
 
-    // фиксированная цена
     static TOPPINGS_SIMPLE = {
         creamyMozzarella: {
             name: 'Сливочная моцарелла',
@@ -48,7 +46,6 @@ class Pizza {
     addTopping(key) {
         const topping = this._findTopping(key);
         if (!topping) return;
-
         if (!this._toppings.includes(key)) {
             this._toppings.push(key);
         }
@@ -72,7 +69,6 @@ class Pizza {
 
     calculatePrice() {
         let total = this._base.price + this._size.extraPrice;
-
         for (const key of this._toppings) {
             const topping = this._findTopping(key);
             if ('price' in topping) {
@@ -81,13 +77,11 @@ class Pizza {
                 total += topping[this._getSizeKey()].price;
             }
         }
-
         return total;
     }
 
     calculateCalories() {
         let total = this._base.calories + this._size.extraCalories;
-
         for (const key of this._toppings) {
             const topping = this._findTopping(key);
             if ('calories' in topping) {
@@ -96,11 +90,9 @@ class Pizza {
                 total += topping[this._getSizeKey()].calories;
             }
         }
-
         return total;
     }
 
-    // ищет добавку в обоих списках
     _findTopping(key) {
         return Pizza.TOPPINGS_SIMPLE[key] || Pizza.TOPPINGS_SIZE_DEPENDENT[key] || null;
     }
@@ -110,19 +102,87 @@ class Pizza {
     }
 }
 
-const pizza = new Pizza('margarita', 'large');
-pizza.addTopping('creamyMozzarella');
-pizza.addTopping('cheeseCrust');
-pizza.addTopping('cheddarParmesan');
+// связь русских названий из HTML с ключами класса
+const PIZZA_MAP = {
+    'Маргарита': 'margarita',
+    'Пепперони': 'pepperoni',
+    'Баварская': 'bavarian'
+};
 
-console.log('Основа:', pizza.getBase());
-console.log('Размер:', pizza.getSize());
-console.log('Добавки:', pizza.getToppings().join(', '));
-console.log('Цена:', pizza.calculatePrice(), 'руб.');
-console.log('Калории:', pizza.calculateCalories(), 'Ккал.');
+const SIZE_MAP = {
+    'маленькая': 'small',
+    'большая': 'large'
+};
 
-pizza.removeTopping('cheeseCrust');
-console.log('\nПосле удаления сырного борта:');
-console.log('Добавки:', pizza.getToppings().join(', '));
-console.log('Цена:', pizza.calculatePrice(), 'руб.');
-console.log('Калории:', pizza.calculateCalories(), 'Ккал.');
+const TOPPING_MAP = {
+    'Сырный борт': 'cheeseCrust',
+    'Сливочная моцарелла': 'creamyMozzarella',
+    'Чедер и пармезан': 'cheddarParmesan'
+};
+
+let pizza = null;
+
+function updateCart() {
+    const btn = document.getElementById('cartButton');
+    if (!pizza) {
+        btn.textContent = 'Выберите пиццу';
+        return;
+    }
+    btn.textContent = `Добавить в корзину за ${pizza.calculatePrice()}₽ (${pizza.calculateCalories()} Ккал)`;
+}
+
+function createPizza() {
+    const baseEl = document.querySelector('.pizza-option.selected');
+    const sizeEl = document.querySelector('input[name="size"]:checked');
+    if (!baseEl || !sizeEl) return null;
+
+    const baseKey = PIZZA_MAP[baseEl.dataset.type];
+    const sizeKey = SIZE_MAP[sizeEl.value];
+    return new Pizza(baseKey, sizeKey);
+}
+
+document.querySelectorAll('.pizza-option').forEach(option => {
+    option.addEventListener('click', () => {
+        document.querySelectorAll('.pizza-option').forEach(o => o.classList.remove('selected'));
+        option.classList.add('selected');
+
+        pizza = createPizza();
+        if (pizza) {
+            document.querySelectorAll('.addon.selected').forEach(addon => {
+                const key = TOPPING_MAP[addon.dataset.name];
+                if (key) pizza.addTopping(key);
+            });
+        }
+        updateCart();
+    });
+});
+
+document.querySelectorAll('input[name="size"]').forEach(input => {
+    input.addEventListener('change', () => {
+        pizza = createPizza();
+        if (pizza) {
+            document.querySelectorAll('.addon.selected').forEach(addon => {
+                const key = TOPPING_MAP[addon.dataset.name];
+                if (key) pizza.addTopping(key);
+            });
+        }
+        updateCart();
+    });
+});
+
+document.querySelectorAll('.addon').forEach(addon => {
+    addon.addEventListener('click', () => {
+        addon.classList.toggle('selected');
+        if (!pizza) return;
+
+        const key = TOPPING_MAP[addon.dataset.name];
+        if (!key) return;
+
+        if (addon.classList.contains('selected')) {
+            pizza.addTopping(key);
+        } else {
+            pizza.removeTopping(key);
+        }
+        updateCart();
+    });
+});
