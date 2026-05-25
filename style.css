@@ -6,11 +6,8 @@
 
 body {
     font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7b4397 100%);
     min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     padding: 20px;
 }
 
@@ -19,8 +16,8 @@ body {
     border-radius: 20px;
     padding: 40px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    max-width: 600px;
-    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
     animation: fadeIn 0.5s ease-in-out;
 }
 
@@ -36,62 +33,49 @@ body {
 }
 
 h1 {
-    color: #4a5568;
-    margin-bottom: 30px;
-    font-size: 2.5em;
+    color: #1e3c72;
+    margin-bottom: 10px;
+    font-size: 2.2em;
     text-align: center;
-    border-bottom: 3px solid #667eea;
+    border-bottom: 3px solid #2a5298;
     padding-bottom: 10px;
 }
 
-.greeting {
-    font-size: 1.5em;
-    color: #764ba2;
+.author {
     text-align: center;
-    margin-bottom: 20px;
-    font-weight: bold;
+    color: #666;
+    margin-bottom: 30px;
+    font-style: italic;
 }
 
-.info-block {
-    background: #f7fafc;
+.task-block {
+    background: #f8f9fa;
     border-radius: 10px;
     padding: 20px;
     margin: 20px 0;
-    border-left: 4px solid #667eea;
+    border-left: 4px solid #2a5298;
+    transition: transform 0.2s;
 }
 
-.info-item {
-    margin: 10px 0;
-    padding: 5px 0;
+.task-block:hover {
+    transform: translateX(5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
-.info-label {
-    font-weight: bold;
-    color: #4a5568;
-}
-
-.info-value {
-    color: #667eea;
-}
-
-.time-block {
-    background: #edf2f7;
-    border-radius: 10px;
-    padding: 20px;
-    margin: 20px 0;
-    text-align: center;
+.task-block h2 {
+    color: #2a5298;
+    margin-bottom: 15px;
     font-size: 1.2em;
 }
 
-.time-display {
-    color: #667eea;
-    font-weight: bold;
-    font-size: 1.3em;
+.task-block p {
+    margin: 8px 0;
+    color: #333;
+    line-height: 1.5;
 }
 
-.date-display {
-    margin-top: 10px;
-    color: #718096;
+.task-block strong {
+    color: #7b4397;
 }
 
 .footer {
@@ -100,4 +84,15 @@ h1 {
     padding-top: 20px;
     border-top: 2px solid #e2e8f0;
     color: #a0aec0;
+}
+
+/* Для мобильных устройств */
+@media (max-width: 600px) {
+    .container {
+        padding: 20px;
+    }
+    
+    h1 {
+        font-size: 1.5em;
+    }
 }
